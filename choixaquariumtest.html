@@ -1,0 +1,153 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="styles/choix.css" rel="stylesheet" type="text/css">
+    <title>Choix de Poissons</title>
+</head>
+<body>
+    <h1>Choisissez le type d'eau :</h1>
+    <select id="typeEau" onchange="afficherPoissons()">
+        <option value="eauDouces">Eau douce</option>
+        <option value="eauSalees">Eau salée</option>
+    </select>
+
+    <h2>Poissons compatibles :</h2>
+    <ul id="listePoissons">
+        <!-- Cette liste sera remplie dynamiquement en JavaScript -->
+    </ul>
+
+    <h2>Poissons sélectionnés :</h2>
+    <ul id="poissonsSelectionnes">
+        <!-- Cette liste sera remplie dynamiquement en JavaScript -->
+    </ul>
+
+    <!-- Boîte de dialogue personnalisée pour l'alerte -->
+    <div id="customAlert" class="custom-alert">
+        Hep hep hep, tu ne voudrais quand même pas que tes poissons s'entretuent ?<br>
+        <button onclick="fermerAlerte()">OK</button>
+    </div>
+
+  <img src="https://th.bing.com/th/id/OIP.8jf31ltlmsVBtd5CH6FzfwHaE7?w=275&h=183&c=7&r=0&o=5&dpr=1.3&pid=1.7"  class="img">
+  <img src="https://th.bing.com/th/id/OIP.vCzsCOT_jey75OV1jfij-QHaE7?w=285&h=189&c=7&r=0&o=5&dpr=1.3&pid=1.7" class="img1">
+  <script>
+        // Données sur les poissons (assurez-vous qu'elles correspondent aux options du menu déroulant)
+        const poissons = [
+           
+            { nom: "néonbleu", typeEau: "eauDouces", incompatibles: ["Combattant", "Mollies", "Rasbora arlequin"] },
+            { nom: "Guppy", typeEau: "eauDouces", incompatibles: ["Combattant", "Mollies", "Rasbora arlequin"] },
+            { nom: "Combattant", typeEau: "eauDouces", incompatibles: ["Néonbleu", "Guppy", "Mollies", "Discus", "Poisson rouge", "Ramirezi", "Rasbora arlequin"] },
+            { nom: "Discus", typeEau: "eauDouces", incompatibles: ["Combattant", "Mollies", "Rasbora arlequin"] },
+            { nom: "Mollies", typeEau: "eauDouces", incompatibles: ["Néonbleu", "Guppy", "Combattant", "Discus", "Poisson rouge", "Ramirezi", "Rasbora arlequin"] },
+            { nom: "Ramirezi", typeEau: "eauDouces", incompatibles: ["Combattant", "Mollies", "Rasbora arlequin"] },
+            { nom: "Poisson rouge", typeEau: "eauDouces", incompatibles: ["Néonbleu", "Guppy", "Combattant", "Discus", "Mollies", "Ramirezi", "Rasbora arlequin"] },
+            { nom: "Rasbora arlequin", typeEau: "eauDouces", incompatibles: ["Combattant", "Mollies","Poisson rouge"] },
+            // Ajoutez d'autres poissons avec leurs caractéristiques ici
+    ];
+
+        let alerteActive = false;
+        let derniereCaseCochée = null;
+
+        // Fonction pour afficher les poissons compatibles
+        function afficherPoissons() {
+            const typeEauSelectionne = document.getElementById("typeEau").value;
+            const listePoissons = document.getElementById("listePoissons");
+
+            // Efface la liste actuelle
+            listePoissons.innerHTML = "";
+
+            // Filtrer les poissons compatibles avec le type d'eau sélectionné
+            const poissonsCompatibles = poissons.filter(poisson => {
+                return poisson.typeEau === typeEauSelectionne;
+            });
+
+            // Afficher les poissons compatibles dans la liste avec des cases à cocher
+            poissonsCompatibles.forEach(poisson => {
+                const listItem = document.createElement("li");
+                const checkbox = document.createElement("input");
+                checkbox.type = "checkbox";
+                checkbox.value = poisson.nom;
+                listItem.appendChild(checkbox);
+                listItem.appendChild(document.createTextNode(poisson.nom));
+                listePoissons.appendChild(listItem);
+
+                // Ajouter un écouteur d'événements "click" pour gérer la sélection
+                checkbox.addEventListener("click", function() {
+                    gererSelection(checkbox);
+                });
+            });
+        }
+
+        // Fonction pour gérer la sélection des poissons
+        function gererSelection(checkbox) {
+            const typeEauSelectionne = document.getElementById("typeEau").value;
+            const poissonsSelectionnes = document.querySelectorAll("#listePoissons input[type=checkbox]:checked");
+            const poissonsSelectionnesListe = document.getElementById("poissonsSelectionnes");
+
+            // Effacer la liste actuelle des poissons sélectionnés
+            poissonsSelectionnesListe.innerHTML = "";
+
+            // Utiliser un ensemble pour stocker les noms des poissons sélectionnés
+            const nomsPoissonsSelectionnes = new Set();
+
+            // Filtrer les poissons compatibles en fonction des poissons sélectionnés
+            poissonsSelectionnes.forEach(checkbox => {
+                const nomPoisson = checkbox.value;
+
+                if (!nomsPoissonsSelectionnes.has(nomPoisson)) {
+                    nomsPoissonsSelectionnes.add(nomPoisson);
+
+                    const listItem = document.createElement("li");
+                    listItem.textContent = nomPoisson;
+                    poissonsSelectionnesListe.appendChild(listItem);
+
+                    // Vérifier l'incompatibilité avec d'autres poissons sélectionnés
+                    poissonsSelectionnes.forEach(poisson => {
+                        if (nomPoisson !== poisson.value) {
+                            const poissonCourant = poissons.find(p => p.nom === nomPoisson);
+                            if (poissonCourant.incompatibles.includes(poisson.value)) {
+                                if (!alerteActive) {
+                                    afficherAlerte();
+                                    alerteActive = true;
+                                }
+                                checkbox.classList.add("alerte-active"); // Ajoute la classe en cas d'alerte active
+                            } else {
+                                checkbox.classList.remove("alerte-active"); // Retire la classe en cas d'inactivité
+                            }
+                        }
+                    });
+                }
+            });
+
+            // Mettre à jour la dernière case cochée
+            derniereCaseCochée = checkbox;
+        }
+
+        // Fonction pour afficher l'alerte au milieu de l'écran
+        function afficherAlerte() {
+            const customAlert = document.getElementById("customAlert");
+            customAlert.style.display = "block";
+        }
+
+        // Fonction pour fermer l'alerte et réinitialiser la dernière case cochée
+        function fermerAlerte() {
+            const customAlert = document.getElementById("customAlert");
+            customAlert.style.display = "none";
+
+            if (derniereCaseCochée) {
+                derniereCaseCochée.checked = false; // Décocher la dernière case cochée
+                derniereCaseCochée.classList.remove("alerte-active"); // Retirer la classe d'alerte
+            }
+
+            alerteActive = false; // Réinitialiser l'état de l'alerte
+        }
+
+        // Appeler la fonction pour afficher les poissons initialement
+        afficherPoissons();
+    </script>
+</body>
+</html>
+
+
