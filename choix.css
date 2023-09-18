@@ -1,0 +1,141 @@
+  /* Styles pour la boîte de dialogue modale */
+  .custom-alert {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 50px;
+    border: 10px solid #ccc;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 9999;}
+
+body{
+    text-align: center;
+    background-color: #000000;
+    color: white;
+}
+
+/* Supprimer les puces (points noirs) devant les éléments de liste */
+ul {
+    list-style-type: none;
+}
+/* Désactive l'apparence par défaut des cases à cocher */
+input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+/* Style personnalisé pour la case à cocher */
+input[type="checkbox"]::before {
+    content: "\2713"; /* Symbole de coche ✔ */
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 1px solid #000;
+    background-color: #fff;
+    margin-right: 10px;
+    text-align: center;
+    line-height: 20px;
+    color: #000;
+}
+
+/* Style pour la case à cocher cochée */
+input[type="checkbox"]:checked::before {
+    content: "\2714"; /* Symbole de coche ✔ (différent pour la case cochée) */
+    background-color: #00b300; /* Couleur de fond verte pour la case cochée */
+    color: #fff; /* Couleur du texte pour la case cochée */
+}
+/* Style pour la case cochée avec la classe "alerte-active" (rouge par exemple) */
+input[type="checkbox"].alerte-active:before {
+    content: "\2714"; /* Symbole de coche ✔ (différent pour la case cochée) */
+    background-color: #00b300; /* Couleur de fond rouge pour la case cochée */
+    color: #fff; /* Couleur du texte pour la case cochée */
+}
+
+
+ /* Style pour la case cochée rouge */
+ .alerte-active {
+    content: "\2714"; /* Symbole de coche ✔ (différent pour la case cochée) */
+   color: #fff; /* Couleur du texte pour la case cochée */
+}
+
+
+/* Style pour la case cochée normale */
+.alerte-inactive {
+    outline: none; /* Supprimer la bordure en cas d'inactivité */
+    
+}     
+
+
+.img{
+     border-radius: 50px;
+     animation: img 10s infinite ;
+     background-color:#AACFD8 ;
+     border-color: #AACFD8;
+}
+
+.img1{
+    border-radius: 50px;
+    animation: img1 10s infinite ;
+    background-color:#AACFD8 ;
+    border-color: #AACFD8;
+}
+    
+
+@keyframes img {
+    0% {
+        transform: translateX(-600px);
+    }
+      
+    25% {
+        transform: translateX(-400px);
+        transform: translateY(150px);
+    }
+    50% {
+        transform: translateX(0x);
+        
+    }
+    
+    75%{
+        transform: translateX(400px);
+    }
+    
+
+ 
+   
+   100%{
+    transform: translatex(600px);
+    
+   }
+}
+
+@keyframes img1 {
+    0% {
+        transform: translateX(-500px);
+    }
+      
+    25% {
+        transform: translateX(-300px);
+        transform: translateY(150px);
+    }
+    50% {
+        transform: translateX(0x);
+        
+    }
+    
+    75%{
+        transform: translateX(500px);
+    }
+    
+
+ 
+   
+   100%{
+    transform: translatex(300px);
+    
+   }
+}
+   
